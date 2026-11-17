@@ -10,7 +10,7 @@ Battery levels of your wireless mouse, headset, keyboard and controller, right o
 
 - **Tiny**: a ~350 KB app using about 2 MB of RAM. It's plain C++/Win32, with no runtime and no background service, and installs in seconds without admin rights.
 - **No vendor software needed**: it talks to the devices directly. G HUB, Synapse, iCUE, GG and NGenuity can stay closed (or keep running; they don't conflict).
-- **Many brands**: Logitech, Razer, SteelSeries, Corsair, HyperX, Glorious, PlayStation and Xbox controllers, any Bluetooth device Windows knows a battery level for, and every headset the bundled [HeadsetControl](https://github.com/Sapd/HeadsetControl) supports.
+- **Many brands**: Logitech, Razer, SteelSeries, Corsair, HyperX, Glorious, Kysona, Smailwolf, PlayStation and Xbox controllers, any Bluetooth device Windows knows a battery level for, and every headset the bundled [HeadsetControl](https://github.com/Sapd/HeadsetControl) supports.
 
 ## Display
 
@@ -46,11 +46,11 @@ Hover for details. Click for the menu: every device, display mode, *Refresh now*
 | **Motospeed / Delux / Ajazz** | Motospeed X6, Delux M900 Pro, Ajazz AJ179 family | Vendor reports (Delux: passive status broadcasts) |
 | **Sony** | DualShock 4, DualSense, DualSense Edge (USB, Bluetooth, wireless adapter); INZONE H9 II and H5 headsets | Input report; INZONE vendor protocol |
 | **Xbox** | Controllers and headsets on the Xbox Wireless adapter or USB | XInput (coarse levels: Low / Medium / Full) |
-| **Bluetooth** | Anything that shows a battery in *Settings → Bluetooth & devices* (earbuds, headphones, BLE mice and keyboards) | Windows device property |
+| **Bluetooth** | Anything that shows a battery in *Settings → Bluetooth & devices* (earbuds, headphones, BLE mice and keyboards). Earbuds that keep their battery on the Hands-Free node, such as the QCY MeloBuds Pro, are included | Windows device property |
 | **Generic HID** | Devices reporting the standard HID *Battery Strength* usage | HID usage page 0x06 / 0x85 |
 | **HeadsetControl** | [Every headset it supports](https://github.com/Sapd/HeadsetControl#supported-headsets) (Audeze, Jabra, Sony INZONE, newer Logitech and more) | Bundled; runs `headsetcontrol -o json` |
 
-**Tested on real hardware:** Glorious Model O Wireless and HyperX Cloud III Wireless.
+**Tested on real hardware:** Glorious Model O Wireless, HyperX Cloud III Wireless, Kysona Jupiter Pro (2.4 GHz receiver 3151:402D), Smailwolf RS7 (USB cable) and QCY MeloBuds Pro (Bluetooth).
 **Implemented from protocol documentation and other projects, not yet tested:** everything else. If you own one of these devices, please report whether it works by [opening an issue](https://github.com/krisgfx9/Wireless-Device-Battery-Monitor/issues).
 
 ## Install
@@ -101,6 +101,8 @@ just lose the extra headsets.
 - **Crowded taskbars:** with a very full centered Windows 11 taskbar, the app buttons can reach the widget. On Windows 10 the task-button area is narrowed automatically.
 - **Sleeping devices:** a device that is asleep may not answer. Its last value stays visible, dimmed. Logitech receivers drop sleeping devices from the link, so their last value is kept for 30 minutes.
 - **Keychron keyboards:** they only report their battery over Bluetooth (shown via the Bluetooth support). Over the 2.4 GHz receiver the firmware does not expose it. Keychron mice are supported.
+- **Smailwolf RS7:** the mouse does not expose a battery over Bluetooth, and neither does the vendor's own software, so only the USB cable and the 2.4 GHz receiver are supported. Over the cable it reports 100% while charging; that value has not been checked against a partly discharged battery. The receiver path follows the vendor's web configurator and is untested.
+- **Kysona Jupiter Pro:** the battery is read through the 2.4 GHz receiver. Over the USB cable (3151:4026) no battery command was found.
 - **Unknown protocols:** some 2.4 GHz devices use undocumented protocols and are not supported yet. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to help add one.
 
 ## How it works
@@ -123,6 +125,8 @@ The protocols come from these projects' research:
 - ATK's web configurator ([hub.atk.pro](https://hub.atk.pro)): ATK mice and the N9 Pro headset
 - G-Wolves' web driver ([mouse.xyz](https://mouse.xyz)): G-Wolves models and their protocols
 - Keychron Launcher ([launcher.keychron.com](https://launcher.keychron.com)): Keychron mice
+- The qmk.top web configurator ([qmk.top](https://qmk.top/)): 2.4 GHz dongles of its family, including the Kysona Jupiter Pro
+- Smailwolf's web driver ([smailwolf.com/qdxz/wyqd](https://smailwolf.com/qdxz/wyqd/)): Smailwolf RS7
 - [peripheral-battery-tray](https://github.com/SteveWang92/peripheral-battery-tray) / [G-Helper](https://github.com/seerge/g-helper): ASUS ROG
 - [zowie-battery](https://github.com/yleshchuk/zowie-battery) and [zowie-battery-tray](https://github.com/IgnacioBarb/zowie-battery-tray): ZOWIE EC-CW and DW
 - [LGSTrayBattery-MotospeedX6](https://github.com/Jacobz888/LGSTrayBattery-MotospeedX6), [omarchy-delux-m900](https://github.com/AeonArcHQ/omarchy-delux-m900), [aj179-linux](https://github.com/Rockeyxx/aj179-linux): Motospeed, Delux, Ajazz
