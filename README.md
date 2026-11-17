@@ -36,6 +36,8 @@ Hover for details. Click for the menu: every device, display mode, *Refresh now*
 | **Glorious** | Model O / O- / D / D- Wireless, Model O 2 / D 2 PRO | Vendor feature report |
 | **Hitscan** | Hyperlight X, Hyperlight N | Vendor feature report (same protocol as Glorious) |
 | **Kysona / Pulsar / ATK (VXE) / Hitscan** | Kysona M600 / Mercury, Pulsar and ATK VXE wireless mice (e.g. VXE X3 Pro, ATK F1 Extreme), Hitscan Hyperlight | Shared vendor protocol with checksummed replies |
+| **2.4 GHz dongles of the qmk.top family** | Kysona Jupiter Pro (dongle 3151:402D) and other 8K mice and keyboards whose dongle is listed by the [qmk.top](https://qmk.top/) web configurator (VIDs 3151, 39AB, 25AA, 342D, 374A, 347A, 0DB0, 379A, 38A9, 145F, 38EE, 391D, 14A5). Only 3151:402D has been tested | Vendor feature report `F7` (battery and online state of the paired mouse/keyboard) |
+| **SMAILWOLF** | RS7 over USB cable (A8A4:2255) or its 2.4 GHz receiver (A8A5:2255, untested). No battery over Bluetooth: the mouse does not expose it and the vendor's own software does not read it either | Vendor HID report `55 30 A5 0B 2E` (percent and charging) |
 | **ATK headsets** | ATK N9 Pro | Virtual COM port protocol (the ATK desktop app must be closed) |
 | **G-Wolves** | Fenrir, Fenrir Pro / Max / Asym, HTX, HTS, HSK, HTR, HT-S2, Lycan, WARG, VUK and their 8K dongles | Glorious or Kysona protocol, depending on the model |
 | **Keychron mice** | M4 and other Keychron mice on the 2.4 GHz receiver | Vendor report from Keychron Launcher |

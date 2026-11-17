@@ -104,7 +104,11 @@ void PollBluetooth(PollContext& ctx) {
     HDEVINFO di = SetupDiGetClassDevsW(nullptr, nullptr, nullptr, DIGCF_ALLCLASSES | DIGCF_PRESENT);
     if (di == INVALID_HANDLE_VALUE) return;
 
-    struct Found { int pct; std::wstring name; };
+    struct Found { int pct; std::wstring name; bool nodeConnected; };
+    // container id -> connection state reported by the main BT device node, when it reports one. The
+    // service nodes that carry the battery (e.g. the Hands-Free AudioGateway of earbuds) can say
+    // "not connected" while the device is connected, so the main node decides when it has an opinion.
+    std::map<std::wstring, bool> mainConnected;
     std::map<std::wstring, std::wstring> containerName;  // container id -> name of the main BT device node
     std::map<std::wstring, UINT32> containerCod;         // container id -> class of device
     std::map<std::wstring, Found> battery;
@@ -129,22 +133,29 @@ void PollBluetooth(PollContext& ctx) {
             UINT32 cod = 0;
             if (SetupDiGetDevicePropertyW(di, &dd, &kClassOfDevice, &t, (PBYTE)&cod, sizeof(cod), nullptr, 0) && t == DEVPROP_TYPE_UINT32)
                 containerCod[cid] = cod;
+            DEVPROP_BOOLEAN mc = DEVPROP_TRUE;
+            if (SetupDiGetDevicePropertyW(di, &dd, &kIsConnected, &t, (PBYTE)&mc, sizeof(mc), nullptr, 0) && t == DEVPROP_TYPE_BOOLEAN)
+                mainConnected[cid] = mc != DEVPROP_FALSE;
         }
 
         BYTE pct = 0;
         if (!SetupDiGetDevicePropertyW(di, &dd, &kBtBattery, &t, &pct, sizeof(pct), nullptr, 0) || t != DEVPROP_TYPE_BYTE) continue;
         DEVPROP_BOOLEAN conn = DEVPROP_TRUE;
+        bool nodeConnected = true;
         if (SetupDiGetDevicePropertyW(di, &dd, &kIsConnected, &t, (PBYTE)&conn, sizeof(conn), nullptr, 0) && t == DEVPROP_TYPE_BOOLEAN &&
             conn == DEVPROP_FALSE)
-            continue;
+            nodeConnected = false;
         ULONG st = 0, prob = 0;
         if (CM_Get_DevNode_Status(&st, &prob, dd.DevInst, 0) == CR_SUCCESS && (st & DN_HAS_PROBLEM)) continue;
         if (pct > 100) continue;
-        battery[cid] = { pct, StripServiceSuffix(name) };
+        battery[cid] = { pct, StripServiceSuffix(name), nodeConnected };
     }
     SetupDiDestroyDeviceInfoList(di);
 
     for (auto& [cid, f] : battery) {
+        // The main device node, when it reports a connection state, overrides the service node's.
+        auto mc = mainConnected.find(cid);
+        if (!(mc != mainConnected.end() ? mc->second : f.nodeConnected)) continue;
         DeviceStatus s;
         s.key = L"bt:" + cid;
         auto it = containerName.find(cid);

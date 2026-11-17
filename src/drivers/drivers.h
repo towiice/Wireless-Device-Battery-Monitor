@@ -57,6 +57,8 @@ void PollRazer(PollContext& ctx);
 void PollSteelSeries(PollContext& ctx);
 void PollCorsair(PollContext& ctx);
 void PollPlayStation(PollContext& ctx);
+void PollSmailwolf(PollContext& ctx); // SMAILWOLF RS7 over USB cable or 2.4 GHz receiver
+void PollRongyuan(PollContext& ctx);  // 2.4 GHz dongles of the qmk.top family (e.g. Kysona Jupiter Pro 3151:402D)
 // Fallbacks.
 void PollHeadsetControl(PollContext& ctx);  // only if headsetcontrol.exe is installed
 void PollGenericHid(PollContext& ctx);
