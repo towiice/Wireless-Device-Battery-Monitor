@@ -2,9 +2,11 @@
 
 Battery levels of your wireless mouse, headset, keyboard and controller, right on the Windows taskbar.
 
+> **This is a fork** of [krisgfx9/Wireless-Device-Battery-Monitor](https://github.com/krisgfx9/Wireless-Device-Battery-Monitor). It adds support for the Kysona Jupiter Pro (2.4 GHz receiver), the Smailwolf RS7 (USB cable / receiver) and Bluetooth earbuds such as the QCY MeloBuds Pro. The installers published in this fork's releases include these additions.
+
 ![Wireless Battery on the taskbar](docs/screenshot.png)
 
-> **Just want it working?** Download **[WirelessBattery-Setup](https://github.com/krisgfx9/Wireless-Device-Battery-Monitor/releases/latest)** from the latest release, run it and click through. That's it.
+> **Just want it working?** Download **[WirelessBattery-Setup](https://github.com/towiice/Wireless-Device-Battery-Monitor/releases/latest)** from the latest release, run it and click through. That's it.
 >
 > **Experienced users** can grab the portable zip, use the [command-line options](#command-line), or [build it from source](#build) with `make` or `build.bat`.
 
@@ -51,13 +53,13 @@ Hover for details. Click for the menu: every device, display mode, *Refresh now*
 | **HeadsetControl** | [Every headset it supports](https://github.com/Sapd/HeadsetControl#supported-headsets) (Audeze, Jabra, Sony INZONE, newer Logitech and more) | Bundled; runs `headsetcontrol -o json` |
 
 **Tested on real hardware:** Glorious Model O Wireless, HyperX Cloud III Wireless, Kysona Jupiter Pro (2.4 GHz receiver 3151:402D), Smailwolf RS7 (USB cable) and QCY MeloBuds Pro (Bluetooth).
-**Implemented from protocol documentation and other projects, not yet tested:** everything else. If you own one of these devices, please report whether it works by [opening an issue](https://github.com/krisgfx9/Wireless-Device-Battery-Monitor/issues).
+**Implemented from protocol documentation and other projects, not yet tested:** everything else. If you own one of these devices, please report whether it works by [opening an issue](https://github.com/towiice/Wireless-Device-Battery-Monitor/issues).
 
 ## Install
 
-[![Latest version](https://img.shields.io/github/v/release/krisgfx9/Wireless-Device-Battery-Monitor?label=latest%20version&style=for-the-badge)](https://github.com/krisgfx9/Wireless-Device-Battery-Monitor/releases/latest)
+[![Latest version](https://img.shields.io/github/v/release/towiice/Wireless-Device-Battery-Monitor?label=latest%20version&style=for-the-badge)](https://github.com/towiice/Wireless-Device-Battery-Monitor/releases/latest)
 
-1. Download **`WirelessBattery-Setup-<version>.exe`** from the [latest release](https://github.com/krisgfx9/Wireless-Device-Battery-Monitor/releases/latest).
+1. Download **`WirelessBattery-Setup-<version>.exe`** from the [latest release](https://github.com/towiice/Wireless-Device-Battery-Monitor/releases/latest).
 2. Run it and click through. It needs **no administrator rights** and **nothing else installed**: no
    runtimes, no drivers, no vendor apps. HeadsetControl comes bundled.
 
