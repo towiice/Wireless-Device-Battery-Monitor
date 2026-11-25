@@ -22,5 +22,8 @@ struct DeviceStatus {
 // Queries every supported device. Blocking (can take a second or two); call from a worker thread.
 std::vector<DeviceStatus> PollAllDevices();
 
+// Makes a poll in progress give up on slow external work (used when the app is closing).
+void CancelPolling();
+
 // Prints every HID collection (for adding support for new devices).
 std::wstring DumpHidCollections();
