@@ -4,10 +4,14 @@
 //   request:  [0][F7][0 x 63]
 //   reply:    [0][canRead][keyboard %][mouse %][keyboard offline][mouse offline][canSend] ...
 // "offline" bytes are 0 when the paired device is connected. The dongle can host a keyboard and a
-// mouse at once, so both are reported when present.
+// mouse at once, so both are reported when present. A slot that has never been online since the app
+// started is left out: most dongles only have a mouse paired.
 // Protocol read from the vendor's own web configurator (https://qmk.top/, class "___rawGetStatus"
 // and the dongle table in its bundle); verified against a 3151:402D dongle with a Kysona Jupiter Pro.
 #include "drivers.h"
+
+#include <set>
+#include <string>
 
 namespace {
 
@@ -69,6 +73,7 @@ bool QueryStatus(HidDev& d, std::vector<BYTE>& r) {
 }  // namespace
 
 void PollRongyuan(PollContext& ctx) {
+    static std::set<std::wstring> seenOnline;  // slot keys; only the polling thread touches it
     for (const Family& f : kFamilies) {
         for (auto [vid, pid] : ctx.Products(f.vid)) {
             if (!KnownDongle(vid, pid)) continue;
@@ -106,7 +111,8 @@ void PollRongyuan(PollContext& ctx) {
                     s.connected = sl.online;
                     if (sl.online) s.percent = sl.level;
                     first = false;
-                    ctx.out.push_back(s);
+                    if (sl.online) seenOnline.insert(s.key);
+                    if (seenOnline.count(s.key)) ctx.out.push_back(s);
                 }
                 ctx.Claim(vid, pid);
                 break;

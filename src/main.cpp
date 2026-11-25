@@ -514,6 +514,7 @@ LRESULT CALLBACK WndProc(HWND h, UINT msg, WPARAM wp, LPARAM lp) {
             KillTimer(h, TIMER_WIDGET);
             widget::Destroy();
             SetEvent(g_stopEvt);
+            CancelPolling();
             if (g_worker) WaitForSingleObject(g_worker, 5000);
             for (auto& [k, e] : g_entries) {
                 if (e.added) TrayDelete(e.uid);

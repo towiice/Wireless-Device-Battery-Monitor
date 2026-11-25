@@ -3,12 +3,15 @@
 // on PATH, it is run with `-o json` and any headset not already handled here is added.
 #include "drivers.h"
 
+#include <atomic>
 #include <cstdlib>
 #include <map>
 #include <memory>
 #include <string>
 
 namespace {
+
+std::atomic<bool> g_cancel{ false };
 
 // ---- minimal JSON reader (objects, arrays, strings, numbers, literals) -----------------------
 
@@ -119,7 +122,7 @@ std::wstring FindExe() {
     return L"";
 }
 
-// Runs the command line and returns its stdout (empty on failure or after `timeoutMs`).
+// Runs the command line and returns its stdout (empty on failure, on cancel or after `timeoutMs`).
 std::string Run(std::wstring cmd, int timeoutMs) {
     SECURITY_ATTRIBUTES sa{ sizeof(sa), nullptr, TRUE };
     HANDLE rd, wr;
@@ -147,7 +150,7 @@ std::string Run(std::wstring cmd, int timeoutMs) {
                 if (out.size() > (1 << 20)) break;
                 continue;
             }
-            if ((LONGLONG)end - (LONGLONG)GetTickCount64() <= 0) { TerminateProcess(pi.hProcess, 1); out.clear(); break; }
+            if (g_cancel || (LONGLONG)end - (LONGLONG)GetTickCount64() <= 0) { TerminateProcess(pi.hProcess, 1); out.clear(); break; }
             Sleep(20);
         }
         CloseHandle(pi.hThread);
@@ -158,6 +161,8 @@ std::string Run(std::wstring cmd, int timeoutMs) {
 }
 
 }  // namespace
+
+void CancelPolling() { g_cancel = true; }
 
 void PollHeadsetControl(PollContext& ctx) {
     static std::wstring exe = FindExe();
